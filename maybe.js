@@ -10,14 +10,21 @@ Maybe.prototype.isNothing = function () {
     return (this._value === null || this._value === undefined)
 }
 
-Maybe.prototype.map = function (f) {
+Maybe.prototype.map = function (fn) {
     if (this.isNothing()) {
         return Maybe.of(null)
     }
-    return Maybe.of(f(this._value))
+    return Maybe.of(fn(this._value))
 }
 
 Maybe.prototype.flatten = function () {
-    return this._value
+    if (this._value instanceof Maybe) {
+        return this._value
+    } else {
+        return this
+    }
 }
 
+Maybe.prototype.flatMap = function (fn) {
+    return this.flatten().map(fn)
+}
