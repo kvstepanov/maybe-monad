@@ -1,30 +1,23 @@
-export const Maybe = function (value) {
-    this._value = value
-}
+const Nothing = {
+  chain: () => Nothing,
+  toString: () => `Nothing`
+};
 
-Maybe.of = function (val) {
-    return new Maybe(val)
-}
+const isNothing = value => value === Nothing;
 
-Maybe.prototype.isNothing = function () {
-    return (this._value === null || this._value === undefined)
-}
+const isNullOrUndef = value => value === undefined || value === null;
 
-Maybe.prototype.map = function (fn) {
-    if (this.isNothing()) {
-        return Maybe.of(null)
-    }
-    return Maybe.of(fn(this._value))
-}
+const Just = value => ({
+  value,
+  map: f => Just(f(value)),
+  chain: f => f(value),
+  toString: () => `Just(${value})`
+});
 
-Maybe.prototype.flatten = function () {
-    if (this._value instanceof Maybe) {
-        return this._value
-    } else {
-        return this
-    }
-}
+const Maybe = value => (isNullOrUndef(value) ? Nothing : Just(value));
+Maybe.of = Maybe;
 
-Maybe.prototype.flatMap = function (fn) {
-    return this.flatten().map(fn)
-}
+const maybe = (defaultValue, f, value) =>
+  isNothing(value) ? defaultValue : value.chain(f);
+
+export { Nothing, Just, Maybe, maybe };

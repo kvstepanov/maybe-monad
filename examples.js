@@ -1,26 +1,51 @@
-import { Maybe } from './maybe'
+import {
+  Nothing, // singular instance of Nothing
+  Just, // constructor (implemented to hide use of `new` keyword)
+  maybe // returns default or calls function with Just's value
+} from "./maybe";
 
-const prop = obj => prop => obj[prop]
+const maybeJsonParse = s => {
+  try {
+    return Just(JSON.parse(s));
+  } catch (e) {
+    return Nothing;
+  }
+};
 
-const maybeNothing = Maybe.of()
-maybeNothing.isNothing() //?
+const maybeName = ({ name }) => (name == null ? Nothing : Just(name)); //?
 
-const maybeNull = Maybe.of(null) //?
-maybeNull.isNothing() //?
+const greet = name =>
+  maybe(
+    "Hello. What is your name?", // default for Nothing case
+    n => `Hello ${n}. Great to see you again.`,
+    name
+  );
 
-const maybeOne = Maybe.of(1) //?
-maybeOne.isNothing() //?
-maybeOne.map(x => x + 1) //?
-maybeOne.flatten() //?
+const greetFromData = d =>
+  greet(
+    maybeJsonParse(d)
+      // using `map` here would cause nested Maybes
+      .chain(maybeName)
+  );
 
-const maybeMaybe = Maybe.of(Maybe.of('Secret value'))
-maybeMaybe.flatten()//?
-maybeMaybe.flatMap(x => x) //?
+const invalidJson = "{";
+const missingName = "{ color: purple }";
+const susan = "{ name: Susan }";
 
-const someObj = {}
+greetFromData(invalidJson); //? "Hello. What's your name?"
+greetFromData(missingName); //? "Hello. What's your name?"
+greetFromData(susan); //? "Hello Susan. Great to see you again."
 
-const maybeObj = Maybe.of(someObj).map(prop('any')) //?
+Just({ name: "Laurie" })
+  .chain(maybeName)
+  .toString(); //?
 
-maybeObj.isNothing() //?
+const validData = maybeJsonParse('{ "name": "Susan" }');
+// validData.map(x => x.name).toString(); //?
+validData.toString(); //?
+validData.chain(maybeName).toString(); //?
+validData.toString(); //?
 
+maybeName({ name: "Bob" }).toString(); //?
 
+Just("thing").chain(x => x.toUpperCase()); //?
