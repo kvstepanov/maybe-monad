@@ -1,0 +1,23 @@
+{
+  "name": "maybe",
+  "version": "0.0.1",
+  "description": "Naive Maybe implementation",
+  "main": "index.js",
+  "directories": {
+    "example": "examples",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kvstepanov/maybe-monad.git"
+  },
+  "author": "Kirill Stepanov",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kvstepanov/maybe-monad/issues"
+  },
+  "homepage": "https://github.com/kvstepanov/maybe-monad#readme"
+}

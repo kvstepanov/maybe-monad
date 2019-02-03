@@ -2,7 +2,7 @@ import {
   Nothing, // singular instance of Nothing
   Just, // constructor (implemented to hide use of `new` keyword)
   maybe // returns default or calls function with Just's value
-} from "./maybe";
+} from "../src/maybe";
 
 const maybeJsonParse = s => {
   try {
