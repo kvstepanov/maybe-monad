@@ -45,4 +45,4 @@ const fromNullable = value => (isNil(value) ? Nothing : Just(value));
 const maybe = (defaultValue, f, value) =>
   isNothing(value) ? defaultValue : value.chain(f);
 
-export { Nothing, Just, fromNullable, maybe };
+export { Nothing, Just, fromNullable, maybe, isNil };

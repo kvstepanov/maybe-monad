@@ -1,7 +1,9 @@
 import {
   Nothing, // singular instance of Nothing
   Just, // constructor (implemented to hide use of `new` keyword)
-  maybe // returns default or calls function with Just's value
+  maybe, // returns default or calls function with Just's value
+  isNil,
+  fromNullable
 } from "../src/maybe";
 
 const maybeJsonParse = s => {
@@ -12,7 +14,7 @@ const maybeJsonParse = s => {
   }
 };
 
-const maybeName = ({ name }) => (name == null ? Nothing : Just(name)); //?
+const maybeName = ({ name }) => fromNullable(name)
 
 const greet = name =>
   maybe(
@@ -22,19 +24,15 @@ const greet = name =>
   );
 
 const greetFromData = d =>
-  greet(
-    maybeJsonParse(d)
-      // using `map` here would cause nested Maybes
-      .chain(maybeName)
-  );
+  greet(maybeJsonParse(d).chain(maybeName));
 
 const invalidJson = "{";
-const missingName = "{ color: purple }";
-const susan = "{ name: Susan }";
+const missingName = "{ \"color\": \"purple\" }";
+const susan = "{ \"name\": \"Susan\" }";
 
-greetFromData(invalidJson); //? "Hello. What's your name?"
-greetFromData(missingName); //? "Hello. What's your name?"
-greetFromData(susan); //? "Hello Susan. Great to see you again."
+greetFromData(invalidJson); //?
+greetFromData(missingName); //?
+greetFromData(susan); //?
 
 Just({ name: "Laurie" })
   .chain(maybeName)
@@ -44,8 +42,5 @@ const validData = maybeJsonParse('{ "name": "Susan" }');
 // validData.map(x => x.name).toString(); //?
 validData.toString(); //?
 validData.chain(maybeName).toString(); //?
-validData.toString(); //?
-
 maybeName({ name: "Bob" }).toString(); //?
-
 Just("thing").chain(x => x.toUpperCase()); //?
